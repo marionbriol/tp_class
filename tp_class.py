@@ -111,38 +111,26 @@ class Student:
 
 
 
-# pour tester
+# votre code
 
-try:
-    reference_lines = ['Report for student Albert Einstein',
-                       '+===============+===============+',
-                       '|     Topic     |    Average    |',
-                       '+===============+===============+',
-                       '|  Mathematics  |     12.80     |',
-                       '+---------------+---------------+',
-                       '|  Scubadiving  |     12.50     |',
-                       '+---------------+---------------+']
+class Classe:
+    def __init__(self, classname: str):
+        self.classname = classname
+        self.classe = defaultdict(list)
 
-    student = Student("Albert", "Einstein")
-    student.add_grade("Mathematics", 12.80)
-    student.add_grade("Scubadiving", 12.50)
-    report = student.report()
-    report_lines = report.strip().split('\n')
-    assert len(report_lines) == len(reference_lines), \
-        f"expected {len(reference_lines)} lines, got {len(report_lines)}"
-    for i, (lineref, linestudent) in enumerate(zip(reference_lines, report_lines), start=1):
-        assert lineref == linestudent, f"Ligne {i} : \n attendu = {lineref}\n  obtenu = {linestudent}"
-except AssertionError as e:
-    print("Les deux chaines sont différentes")
-    print(e)
-except Exception as e:
-    print("OOPS - Something's wrong")
-    print(f"Error message : {e}")
-else:
-    print('Congrats ! Your implementation works !')
+    def add_student(self, student: Student):
+        self.classe[(student.first_name, student.last_name)] = student
 
+    def __len__(self):
+        return len(self.classe)
 
+    def get_student(self, first_name: str, last_name: str):
+        if (first_name, last_name) in self.classe:
+            return self.classe[(first_name, last_name)]
+        else:
+            return None
 
-
+    def __repr__(self):
+        return f"Class({self.classname}, Students: {self.classe})"
 
 
