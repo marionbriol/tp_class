@@ -63,3 +63,86 @@ class Tirelire:
 
 
 
+
+from collections import defaultdict
+
+class Student:
+    def __init__(self, first_name: str, last_name: str):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.Grades = defaultdict(list)
+
+    def add_grade(self, course: str, grade: float):
+        if (0 <= grade <= 20):
+            self.Grades[course].append(grade)
+        else:
+            raise ValueError
+
+    def followed_topics(self):
+        topics = []
+        for key in self.Grades.keys():
+            topics.append(key)
+        return topics
+
+    def compute_average(self, course: str):
+        moy = 0
+        if course in self.Grades:
+            moy = sum(self.Grades[course])/len(self.Grades[course])
+        else:
+            raise ValueError
+        return moy
+
+    def report(self):
+        L = []
+
+        L.append(f"Report for student {self.first_name} {self.last_name}")
+        L.append("+===============+===============+")
+        L.append("|     Topic     |    Average    |")
+        L.append("+===============+===============+")
+
+        for topic in self.followed_topics():
+            L.append(f"|{topic:^15}|{self.compute_average(topic):^15.2f}|")
+            L.append("+---------------+---------------+")
+
+        return "\n".join(L)
+
+    def __repr__(self):
+        return f"Student({self.first_name} {self.last_name}, Grades: self.Grades)"
+
+
+
+# pour tester
+
+try:
+    reference_lines = ['Report for student Albert Einstein',
+                       '+===============+===============+',
+                       '|     Topic     |    Average    |',
+                       '+===============+===============+',
+                       '|  Mathematics  |     12.80     |',
+                       '+---------------+---------------+',
+                       '|  Scubadiving  |     12.50     |',
+                       '+---------------+---------------+']
+
+    student = Student("Albert", "Einstein")
+    student.add_grade("Mathematics", 12.80)
+    student.add_grade("Scubadiving", 12.50)
+    report = student.report()
+    report_lines = report.strip().split('\n')
+    assert len(report_lines) == len(reference_lines), \
+        f"expected {len(reference_lines)} lines, got {len(report_lines)}"
+    for i, (lineref, linestudent) in enumerate(zip(reference_lines, report_lines), start=1):
+        assert lineref == linestudent, f"Ligne {i} : \n attendu = {lineref}\n  obtenu = {linestudent}"
+except AssertionError as e:
+    print("Les deux chaines sont différentes")
+    print(e)
+except Exception as e:
+    print("OOPS - Something's wrong")
+    print(f"Error message : {e}")
+else:
+    print('Congrats ! Your implementation works !')
+
+
+
+
+
+
