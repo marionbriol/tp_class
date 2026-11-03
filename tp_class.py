@@ -129,8 +129,48 @@ class Classe:
             return self.classe[(first_name, last_name)]
         else:
             return None
+    def load_students_from_file(self, filename: str):
+        with open(filename, 'r', encoding='utf-8') as fichier:
+            for line in fichier:
+                noms = line.strip().split(',')
+                student = Student(noms[0], noms[1])
+                Classe.add_student(self, student)
+
+    def load_grades_from_file(self, filename: str):
+        with open(filename, 'r', encoding='utf-8') as fichier:
+            for line in fichier:
+                infos = line.strip().split(',')
+                student = Student(infos[0], infos[1])
+                if Classe.get_student(self, infos[0], infos[1]) is None:
+                    print(f"L'élève {infos[0]} {infos[1]} n'est pas dans la classe")
+                    continue
+                else:
+                    course = infos[2]
+                    notes = list(map(float, infos[3:]))
+                    for i in notes:
+                        student.add_grade(course, i)
+
+    def catalog(self):
+        catalogue = defaultdict(int)
+        for student in self.classe:
+            for matiere in Student.followed_topics(student):
+                catalogue[matiere] +=1
+        return catalogue
+
+    def compute_averages(self):
+        dico = defaultdict(int)
+        for student in self.classe:
+            for matiere in Student.followed_topics(student):
+                dico[matiere][0] += Student.compute_average(student, matiere)
+                dico[matiere][1] += 1
+        for matiere in dico.keys():
+            dico[matiere][0] = dico[matiere][0]/dico[matiere][1]
+        return dico
+
 
     def __repr__(self):
         return f"Class({self.classname}, Students: {self.classe})"
+
+
 
 
